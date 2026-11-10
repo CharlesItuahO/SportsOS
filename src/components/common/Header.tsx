@@ -10,7 +10,8 @@ import {
   Sliders, 
   ShieldAlert,
   ChevronDown,
-  Layers
+  Layers,
+  Plus
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -28,6 +29,7 @@ export const Header: React.FC = () => {
     setSearchOpen,
     notificationsOpen,
     setNotificationsOpen,
+    setCreateCampusModalOpen,
     injuries,
     coaches,
     fixtures
@@ -79,7 +81,13 @@ export const Header: React.FC = () => {
           <span className="text-[#9AA3B0] font-medium">Campus:</span>
           <select 
             value={selectedCampus}
-            onChange={(e) => setSelectedCampus(e.target.value as CampusId)}
+            onChange={(e) => {
+              if (e.target.value === '__NEW__') {
+                setCreateCampusModalOpen(true);
+              } else {
+                setSelectedCampus(e.target.value as CampusId);
+              }
+            }}
             className="bg-transparent text-white font-medium focus:outline-none cursor-pointer pr-1"
           >
             <option value="ALL" className="bg-[#0F2740] text-white">All Campuses (Consolidated)</option>
@@ -88,7 +96,17 @@ export const Header: React.FC = () => {
                 {c.name}
               </option>
             ))}
+            <option value="__NEW__" className="bg-[#0F2740] text-[#F26B1D] font-bold">
+              + Provision New Campus...
+            </option>
           </select>
+          <button
+            onClick={() => setCreateCampusModalOpen(true)}
+            className="ml-1 p-0.5 rounded text-[#9AA3B0] hover:text-[#F26B1D] hover:bg-[#204268] transition-colors"
+            title="Provision New Campus"
+          >
+            <Plus className="w-3.5 h-3.5" />
+          </button>
         </div>
 
         {/* Term Switcher */}

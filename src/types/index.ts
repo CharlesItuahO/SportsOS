@@ -1,4 +1,4 @@
-export type CampusId = 'ALL' | 'campus-north' | 'campus-south' | 'campus-east';
+export type CampusId = string;
 
 export interface Campus {
   id: string;
@@ -370,7 +370,7 @@ export interface AuditLogItem {
   timestamp: string;
   userName: string;
   userRole: RoleType;
-  action: 'READ' | 'CREATE' | 'UPDATE' | 'DELETE' | 'PUBLISH_SCORECARD' | 'OVERRIDE_CLASH' | 'MEDICAL_CLEARANCE';
+  action: 'READ' | 'CREATE' | 'UPDATE' | 'DELETE' | 'PUBLISH_SCORECARD' | 'OVERRIDE_CLASH' | 'MEDICAL_CLEARANCE' | 'CREATE_CAMPUS';
   module: string;
   targetRef: string;
   details: string;

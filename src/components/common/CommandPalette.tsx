@@ -80,6 +80,7 @@ export const CommandPalette: React.FC = () => {
     { label: 'Strategy Canvas (3-5 Year Plan)', module: 'strategy', subtab: 'canvas', category: 'Strategy' },
     { label: 'Coach Vetting & Compliance', module: 'coaching', subtab: 'roster', category: 'Coaching' },
     { label: 'Fixtures & Clash Detector', module: 'competitions', subtab: 'fixtures', category: 'Competitions' },
+    { label: 'Provision New School Campus', module: 'settings', subtab: 'campuses', category: 'Settings & Admin' },
   ];
 
   const filteredQuickNav = trimmed

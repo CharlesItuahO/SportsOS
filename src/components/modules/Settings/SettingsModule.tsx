@@ -9,7 +9,8 @@ import {
   Download, 
   History,
   CheckCircle2,
-  AlertTriangle
+  AlertTriangle,
+  Plus
 } from 'lucide-react';
 
 export const SettingsModule: React.FC = () => {
@@ -19,7 +20,10 @@ export const SettingsModule: React.FC = () => {
     auditLogs, 
     campuses, 
     currentRole, 
-    setCurrentRole 
+    setCurrentRole,
+    setCreateCampusModalOpen,
+    setSelectedCampus,
+    selectedCampus
   } = useApp();
 
   const [retentionDays, setRetentionDays] = useState(2555); // 7 years statutory for pupil records
@@ -195,22 +199,90 @@ export const SettingsModule: React.FC = () => {
 
       {/* Subtab 3: Multi-Campus Directory */}
       {activeSubtab === 'campuses' && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {campuses.map(c => (
-            <div key={c.id} className="bg-white p-4 rounded-xl border border-[#E2E8F0] shadow-xs space-y-3">
-              <span className="text-[10px] font-bold text-[#F26B1D] font-mono">{c.code}</span>
-              <h4 className="font-bold text-base text-[#0F2740]">{c.name}</h4>
-              <p className="text-xs text-[#6B7480]">{c.address}</p>
-              <div className="pt-2 border-t border-[#F1F5F9] text-xs flex justify-between">
-                <span className="text-[#6B7480]">Campus Sports Lead:</span>
-                <span className="font-semibold text-[#0F2740]">{c.leadName}</span>
-              </div>
-              <div className="flex justify-between text-xs text-[#6B7480]">
-                <span>Student Body:</span>
-                <span className="font-mono font-bold text-[#0F2740]">{c.studentCount} pupils</span>
-              </div>
+        <div className="space-y-4">
+          <div className="bg-white p-4 rounded-xl border border-[#E2E8F0] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 className="font-bold text-sm text-[#0F2740]">Multi-Campus School Provisioning Directory</h3>
+              <p className="text-xs text-[#6B7480]">
+                Configure physical campuses, assign Campus Sports Leads, and manage whole-school athletic multi-tenancy.
+              </p>
             </div>
-          ))}
+            <button
+              onClick={() => setCreateCampusModalOpen(true)}
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0F2740] hover:bg-[#1E3A5A] text-white text-xs font-bold rounded-lg shadow-xs transition-colors self-start sm:self-auto"
+            >
+              <Plus className="w-3.5 h-3.5 text-[#F26B1D]" />
+              <span>Provision New Campus</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {campuses.map(c => {
+              const isActive = selectedCampus === c.id;
+
+              return (
+                <div 
+                  key={c.id} 
+                  className={`bg-white p-4 rounded-xl border shadow-xs space-y-3 flex flex-col justify-between transition-all ${
+                    isActive ? 'border-[#0F2740] ring-1 ring-[#0F2740]' : 'border-[#E2E8F0] hover:border-[#CBD5E1]'
+                  }`}
+                >
+                  <div>
+                    <div className="flex justify-between items-start">
+                      <span className="text-[10px] font-bold text-[#F26B1D] font-mono bg-orange-50 border border-orange-200 px-1.5 py-0.5 rounded">
+                        {c.code}
+                      </span>
+                      {isActive && (
+                        <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">
+                          Current Active Scope
+                        </span>
+                      )}
+                    </div>
+                    <h4 className="font-bold text-base text-[#0F2740] mt-1.5">{c.name}</h4>
+                    <p className="text-xs text-[#6B7480]">{c.address}</p>
+                  </div>
+
+                  <div className="pt-2 border-t border-[#F1F5F9] space-y-2 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-[#6B7480]">Campus Sports Lead:</span>
+                      <span className="font-semibold text-[#0F2740]">{c.leadName}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-[#6B7480]">Student Body:</span>
+                      <span className="font-mono font-bold text-[#0F2740]">{c.studentCount} pupils</span>
+                    </div>
+
+                    <div className="pt-1">
+                      <button
+                        onClick={() => setSelectedCampus(c.id)}
+                        className={`w-full py-1.5 rounded text-xs font-semibold transition-colors ${
+                          isActive 
+                            ? 'bg-slate-100 text-[#0F2740] cursor-default' 
+                            : 'bg-[#F8FAFC] hover:bg-[#0F2740] text-[#3F4B5A] hover:text-white border border-[#CBD5E1]'
+                        }`}
+                      >
+                        {isActive ? 'Scope Active' : 'Filter Whole Platform to Campus'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+
+            {/* Dashed CTA Card to Provision New Campus */}
+            <button
+              onClick={() => setCreateCampusModalOpen(true)}
+              className="p-6 rounded-xl border-2 border-dashed border-[#CBD5E1] hover:border-[#0F2740] bg-[#F8FAFC]/50 hover:bg-[#F8FAFC] flex flex-col items-center justify-center text-center space-y-2 transition-all group min-h-[190px]"
+            >
+              <div className="w-10 h-10 rounded-full bg-white border border-[#CBD5E1] group-hover:border-[#0F2740] flex items-center justify-center text-[#6B7480] group-hover:text-[#F26B1D] transition-colors shadow-2xs">
+                <Plus className="w-5 h-5" />
+              </div>
+              <div>
+                <span className="font-bold text-xs text-[#0F2740] block">Provision New Campus</span>
+                <span className="text-[11px] text-[#6B7480]">Add a school site, code, lead, and pupil quota</span>
+              </div>
+            </button>
+          </div>
         </div>
       )}
 

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useMemo } from 'react';
 import { 
+  Campus,
   CampusId, 
   TermId, 
   RoleType, 
@@ -23,7 +24,7 @@ import {
   BudgetLine
 } from '../types';
 import { 
-  campuses, 
+  campuses as initialCampuses, 
   terms, 
   students as initialStudents, 
   athleteProfiles as initialAthletes, 
@@ -79,9 +80,12 @@ interface AppContextType {
   setSearchOpen: (open: boolean) => void;
   notificationsOpen: boolean;
   setNotificationsOpen: (open: boolean) => void;
+  createCampusModalOpen: boolean;
+  setCreateCampusModalOpen: (open: boolean) => void;
 
   // Domain Data States
-  campuses: typeof campuses;
+  campuses: Campus[];
+  addCampus: (newCampus: Omit<Campus, 'id'>) => Campus;
   terms: typeof terms;
   students: Student[];
   athletes: AthleteProfile[];
@@ -142,8 +146,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [createCampusModalOpen, setCreateCampusModalOpen] = useState(false);
 
   // Mutable Collections
+  const [campuses, setCampuses] = useState<Campus[]>(initialCampuses);
   const [students, setStudents] = useState<Student[]>(initialStudents);
   const [athletes, setAthletes] = useState<AthleteProfile[]>(initialAthletes);
   const [teams, setTeams] = useState<Team[]>(initialTeams);
@@ -347,6 +353,28 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     addAuditEntry('CREATE', 'Safeguarding Incidents', ref, `Logged ${fullItem.severity} ${fullItem.type} at ${fullItem.location}`);
   };
 
+  const addCampus = (newCampusData: Omit<Campus, 'id'>): Campus => {
+    const slug = newCampusData.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '')
+      .slice(0, 18);
+    const newId = `campus-${slug || 'site'}-${Date.now().toString().slice(-4)}`;
+    const newCampus: Campus = {
+      ...newCampusData,
+      id: newId,
+    };
+    setCampuses(prev => [...prev, newCampus]);
+    addAuditEntry(
+      'CREATE_CAMPUS',
+      'Multi-Campus Provisioning',
+      newCampus.name,
+      `Provisioned new campus '${newCampus.name}' (${newCampus.code}) under Lead '${newCampus.leadName}' with ${newCampus.studentCount} pupils.`
+    );
+    return newCampus;
+  };
+
   // Scoped filters based on selectedCampus
   const filteredStudents = useMemo(() => {
     if (selectedCampus === 'ALL') return students;
@@ -415,6 +443,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setSearchOpen,
         notificationsOpen,
         setNotificationsOpen,
+        createCampusModalOpen,
+        setCreateCampusModalOpen,
 
         campuses,
         terms,
@@ -445,6 +475,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         approveCampSafeguarding,
         publishScorecardVersion,
         addIncident,
+        addCampus,
         addAuditEntry,
 
         filteredStudents,

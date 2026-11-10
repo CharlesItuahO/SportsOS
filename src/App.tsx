@@ -4,6 +4,7 @@ import { Header } from './components/common/Header';
 import { Sidebar } from './components/common/Sidebar';
 import { CommandPalette } from './components/common/CommandPalette';
 import { NotificationsDrawer } from './components/common/NotificationsDrawer';
+import { CreateCampusModal } from './components/common/CreateCampusModal';
 
 // Module Components
 import { CommandCenter } from './components/modules/CommandCenter/CommandCenter';
@@ -62,6 +63,7 @@ const MainLayout: React.FC = () => {
 
       <CommandPalette />
       <NotificationsDrawer />
+      <CreateCampusModal />
     </div>
   );
 };
