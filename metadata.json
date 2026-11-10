@@ -1,0 +1,6 @@
+{
+  "name": "SportsOS — Head of Sports Command Platform",
+  "description": "The operating system for Heads of Sports at multi-campus schools: strategy, participation, talent pathways, coaching, competitions, facilities, and safeguarding.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
